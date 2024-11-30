@@ -159,11 +159,11 @@ export class OriginVerify extends Construct implements IVerification {
   }
 
   /** Associates a WAFv2 WebACL into an AWS Resource (defined by ARN). */
-  private associate(acl: CfnWebACL, arn: string): void {
-    console.log('Associate, aclArn: ', acl.attrArn, 'resourceArn: ', arn);
+  private associate(acl: CfnWebACL, resourceArn: string): void {
+    console.log('Associate, aclArn: ', acl.attrArn, 'resourceArn: ', resourceArn);
     new CfnWebACLAssociation(this, 'WebACLAssociation', {
       webAclArn: acl.attrArn,
-      resourceArn: arn,
+      resourceArn: resourceArn,
     });
   }
 
