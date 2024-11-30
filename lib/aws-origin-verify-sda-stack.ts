@@ -1,16 +1,21 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import { AwsOriginVerifySdaStackProps } from './AwsOriginVerifySdaStackProps';
+import { OriginVerify } from '../src/construct';
+import { SecretValue } from 'aws-cdk-lib';
+import { PythonFunction } from "@aws-cdk/aws-lambda-python-alpha";
+import * as path from 'path';
+import { IVerification } from '../src/contract';
+import { OriginNestedStack } from './stacts/origin-nested-stack';
 
 export class AwsOriginVerifySdaStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+
+  constructor(scope: Construct, id: string, props: AwsOriginVerifySdaStackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
-
-    // example resource
-    // const queue = new sqs.Queue(this, 'AwsOriginVerifySdaQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    const originNestedStack = new OriginNestedStack(this, `${props.resourcePrefix}-originNestedStack`, {
+      ...props,
+      originSecretValue: 'foobar',
+    });
   }
 }
