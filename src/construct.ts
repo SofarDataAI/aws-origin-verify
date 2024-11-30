@@ -160,6 +160,7 @@ export class OriginVerify extends Construct implements IVerification {
 
   /** Associates a WAFv2 WebACL into an AWS Resource (defined by ARN). */
   private associate(acl: CfnWebACL, arn: string): void {
+    console.log('Associate, aclArn: ', acl.attrArn, 'resourceArn: ', arn);
     new CfnWebACLAssociation(this, 'WebACLAssociation', {
       webAclArn: acl.attrArn,
       resourceArn: arn,
@@ -168,44 +169,54 @@ export class OriginVerify extends Construct implements IVerification {
 
   /** Type guard for Application Load Balancer. */
   private isAlb(origin: Origin): origin is IApplicationLoadBalancer {
+    console.log('Is Alb');
     return 'loadBalancerArn' in origin;
   }
 
   /** Type guard for API Gateway Stage. */
   private isStage(origin: Origin): origin is IStage {
+    console.log('Is Stage');
     return 'stageName' in origin;
   }
 
   /** Type guard for AppSync GraphQL API. */
   private isCfnGraphQLApi(origin: Origin): origin is CfnGraphQLApi {
+    console.log('Is CfnGraphQLApi');
     return 'attrGraphQlUrl' in origin;
   }
 
   /** Type guard for HTTP API. */
   private isHttpApi(origin: Origin): origin is IHttpStage {
+    console.log('Is HttpApi');
     return 'apiId' in origin;
   }
 
   /** Type guard for Lambda Function URL. */
   private isFunctionUrl(origin: Origin): origin is IFunctionUrl {
+    console.log('Is FunctionUrl');
     return 'url' in origin;
   }
 
   /** Resolves origin (either IStage or IApplicationLoadBalancer) ARN. */
   private resolveOriginArn(origin: Origin): string {
     if (this.isAlb(origin)) {
+      console.log('Is Alb, loadBalancerArn: ', origin.loadBalancerArn);
       return origin.loadBalancerArn;
     }
     if (this.isStage(origin)) {
+      console.log('Is Stage, stageArn: ', this.resolveStageArn(origin));
       return this.resolveStageArn(origin);
     }
     if (this.isCfnGraphQLApi(origin)) {
+      console.log('Is CfnGraphQLApi, attrArn: ', origin.attrArn);
       return origin.attrArn;
     }
     if (this.isHttpApi(origin)) {
+      console.log('Is HttpApi, apiArn: ', this.resolveHttpApiArn(origin));
       return this.resolveHttpApiArn(origin);
     }
     if (this.isFunctionUrl(origin)) {
+      console.log('Is FunctionUrl, functionArn: ', origin.functionArn);
       return origin.functionArn;
     }
     addError(

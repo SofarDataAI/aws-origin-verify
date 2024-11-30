@@ -1,15 +1,12 @@
-import { NestedStack, SecretValue } from "aws-cdk-lib";
+import { NestedStack } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { OriginNestedStackProps } from "./OriginNestedStackProps";
-import { IVerification } from "../../src/contract";
 import * as cdk from "aws-cdk-lib";
-import { OriginVerify } from "../../src";
 import { PythonFunction } from "@aws-cdk/aws-lambda-python-alpha";
 import * as path from "path";
 
 export class OriginNestedStack extends NestedStack {
     public readonly originVerifyFnUrl: cdk.aws_lambda.IFunctionUrl;
-    public readonly originVerify: IVerification;
 
     constructor(scope: Construct, id: string, props: OriginNestedStackProps) {
         super(scope, id, props);
@@ -46,16 +43,16 @@ export class OriginNestedStack extends NestedStack {
             authType: cdk.aws_lambda.FunctionUrlAuthType.NONE,
         });
 
-        const customSecretValue = SecretValue.unsafePlainText(props.originSecretValue);
-        this.originVerify = new OriginVerify(this, 'OriginVerify', {
-            origin: this.originVerifyFnUrl,
-            secretValue: customSecretValue,
-        });
-
         new cdk.CfnOutput(this, 'OriginVerifyFnUrl', {
             value: this.originVerifyFnUrl.url,
             description: `${props.resourcePrefix}-originVerifyFnUrl`,
             exportName: `${props.resourcePrefix}-originVerifyFnUrl`,
+        });
+
+        new cdk.CfnOutput(this, 'OriginVerifyFnArn', {
+            value: this.originVerifyFnUrl.functionArn,
+            description: `${props.resourcePrefix}-originVerifyFnArn`,
+            exportName: `${props.resourcePrefix}-originVerifyFnArn`,
         });
     }
 }

@@ -1,10 +1,11 @@
-import { NestedStack } from "aws-cdk-lib";
+import { NestedStack, SecretValue } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as cdk from 'aws-cdk-lib';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import { DistributionNestedStackProps } from "./DistributionNestedStackProps";
+import { OriginVerify } from "../../src/construct";
 
 export class DistributionNestedStack extends NestedStack {
     public readonly cloudFrontDistributionUrl: string;
@@ -42,6 +43,12 @@ export class DistributionNestedStack extends NestedStack {
             minTtl: cdk.Duration.seconds(60),
         });
 
+        const customSecretValue = SecretValue.unsafePlainText(props.originSecretValue);
+        const originVerify = new OriginVerify(this, 'OriginVerify', {
+            origin: props.originVerifyFnUrl,
+            secretValue: customSecretValue,
+        });
+
         /**
          * Creates a CloudFront distribution for the TypeScript Lambda function.
          *
@@ -53,7 +60,7 @@ export class DistributionNestedStack extends NestedStack {
                     originShieldEnabled: true,
                     originShieldRegion: props.cdkDeployRegion,
                     customHeaders: {
-                        [props.originVerify.headerName]: props.originVerify.headerValue,
+                        [originVerify.headerName]: originVerify.headerValue,
                     },
                 }),
                 allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
@@ -62,6 +69,7 @@ export class DistributionNestedStack extends NestedStack {
             },
             logBucket: logBucket,
             logFilePrefix: 'cloudfront-logs/',
+            minimumProtocolVersion: cloudfront.SecurityPolicyProtocol.TLS_V1_2_2019,
         });
 
         /**

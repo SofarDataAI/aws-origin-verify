@@ -11,13 +11,12 @@ export class AwsOriginVerifySdaStack extends cdk.Stack {
 
     const originNestedStack = new OriginNestedStack(this, `${props.resourcePrefix}-originNestedStack`, {
       ...props,
-      originSecretValue: process.env.ORIGIN_SECRET_VALUE!,
     });
 
     const distributionNestedStack = new DistributionNestedStack(this, `${props.resourcePrefix}-distributionNestedStack`, {
       ...props,
       originVerifyFnUrl: originNestedStack.originVerifyFnUrl,
-      originVerify: originNestedStack.originVerify,
+      originSecretValue: process.env.ORIGIN_SECRET_VALUE!,
     });
 
     new cdk.CfnOutput(this, 'CloudFrontDistributionUrl', {

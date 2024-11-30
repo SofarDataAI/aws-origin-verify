@@ -1,6 +1,5 @@
 import { NestedStackProps } from "aws-cdk-lib";
 import { AwsOriginVerifySdaBaseStackProps } from "../AwsOriginVerifySdaStackProps";
-import { IVerification } from "../../src/contract";
 import * as cdk from "aws-cdk-lib";
 
 export interface DistributionNestedStackProps extends AwsOriginVerifySdaBaseStackProps, NestedStackProps {
@@ -10,8 +9,7 @@ export interface DistributionNestedStackProps extends AwsOriginVerifySdaBaseStac
      */
     readonly originVerifyFnUrl: cdk.aws_lambda.IFunctionUrl;
     /**
-     * The origin verify instance.
-     * @type {IVerification}
+     * The secret value for the origin is verified.
      */
-    readonly originVerify: IVerification;
+    readonly originSecretValue: string;
 }
