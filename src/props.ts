@@ -7,12 +7,30 @@ import { IFunctionUrl } from 'aws-cdk-lib/aws-lambda';
 import { CfnWebACL } from 'aws-cdk-lib/aws-wafv2';
 
 /**
+ * A Lambda function Url
+ */
+export interface ILambdaFunctionUrl {
+  /**
+   * The url of the Lambda function.
+   *
+   * @attribute FunctionUrl
+   */
+  readonly url: string;
+  /**
+   * The ARN of the function this URL refers to
+   *
+   * @attribute FunctionArn
+   */
+  readonly functionArn: string;
+}
+
+/**
  * Origin to "protect" via WAFv2 WebACL request verification.
  * Accepted types:
  * - `IStage` (from `aws-cdk-lib/aws-apigateway`)
  * - `IApplicationLoadBalancer` (from `aws-cdk-lib/aws-elasticloadbalancingv2`)
  */
-export type Origin = IStage | IApplicationLoadBalancer | CfnGraphQLApi | IHttpStage | IFunctionUrl;
+export type Origin = IStage | IApplicationLoadBalancer | CfnGraphQLApi | IHttpStage | ILambdaFunctionUrl;
 
 /**
  * Properties for `OriginVerify` constructor.

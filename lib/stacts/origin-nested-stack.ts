@@ -6,7 +6,9 @@ import { PythonFunction } from "@aws-cdk/aws-lambda-python-alpha";
 import * as path from "path";
 
 export class OriginNestedStack extends NestedStack {
-    public readonly originVerifyFnUrl: cdk.aws_lambda.IFunctionUrl;
+    public readonly lambdaFnUrl: cdk.aws_lambda.IFunctionUrl;
+    public readonly originVerifyFnArn: string;
+    public readonly originVerifyFnUrl: string;
 
     constructor(scope: Construct, id: string, props: OriginNestedStackProps) {
         super(scope, id, props);
@@ -31,7 +33,7 @@ export class OriginNestedStack extends NestedStack {
          *
          * @type {cdk.aws_lambda.FunctionUrl}
          */
-        this.originVerifyFnUrl = new cdk.aws_lambda.FunctionUrl(this, `${props.resourcePrefix}-originVerifyFnUrl`, {
+        this.lambdaFnUrl = new cdk.aws_lambda.FunctionUrl(this, `${props.resourcePrefix}-originVerifyFnUrl`, {
             function: originVerifyFn,
             invokeMode: cdk.aws_lambda.InvokeMode.BUFFERED,
             cors: {
@@ -43,14 +45,17 @@ export class OriginNestedStack extends NestedStack {
             authType: cdk.aws_lambda.FunctionUrlAuthType.NONE,
         });
 
+        this.originVerifyFnUrl = this.lambdaFnUrl.url;
+        this.originVerifyFnArn = this.lambdaFnUrl.functionArn;
+
         new cdk.CfnOutput(this, 'OriginVerifyFnUrl', {
-            value: this.originVerifyFnUrl.url,
+            value: this.lambdaFnUrl.url,
             description: `${props.resourcePrefix}-originVerifyFnUrl`,
             exportName: `${props.resourcePrefix}-originVerifyFnUrl`,
         });
 
         new cdk.CfnOutput(this, 'OriginVerifyFnArn', {
-            value: this.originVerifyFnUrl.functionArn,
+            value: this.lambdaFnUrl.functionArn,
             description: `${props.resourcePrefix}-originVerifyFnArn`,
             exportName: `${props.resourcePrefix}-originVerifyFnArn`,
         });

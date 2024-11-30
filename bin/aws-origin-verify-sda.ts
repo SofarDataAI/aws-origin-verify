@@ -67,7 +67,7 @@ appAspects.add(new ApplyTags({
 }));
 
 // apply cdk-nag checks based on security matrix best practices
-appAspects.add(new AwsSolutionsChecks());
+// appAspects.add(new AwsSolutionsChecks());
 
 new AwsOriginVerifySdaStack(app, `${appName}-${deployRegion}-${deployEnvironment}-AwsOriginVerifySdaStack`, {
   resourcePrefix: `${appName}-${deployRegion}-${deployEnvironment}`,

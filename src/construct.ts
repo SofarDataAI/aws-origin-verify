@@ -3,7 +3,7 @@ import { IStage } from 'aws-cdk-lib/aws-apigateway';
 import { IHttpStage } from 'aws-cdk-lib/aws-apigatewayv2';
 import { CfnGraphQLApi } from 'aws-cdk-lib/aws-appsync';
 import { IApplicationLoadBalancer } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
-import { IFunctionUrl } from 'aws-cdk-lib/aws-lambda';
+import { ILambdaFunctionUrl } from './props';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { CfnWebACL, CfnWebACLAssociation } from 'aws-cdk-lib/aws-wafv2';
 import { Construct } from 'constructs';
@@ -169,31 +169,26 @@ export class OriginVerify extends Construct implements IVerification {
 
   /** Type guard for Application Load Balancer. */
   private isAlb(origin: Origin): origin is IApplicationLoadBalancer {
-    console.log('Is Alb');
     return 'loadBalancerArn' in origin;
   }
 
   /** Type guard for API Gateway Stage. */
   private isStage(origin: Origin): origin is IStage {
-    console.log('Is Stage');
     return 'stageName' in origin;
   }
 
   /** Type guard for AppSync GraphQL API. */
   private isCfnGraphQLApi(origin: Origin): origin is CfnGraphQLApi {
-    console.log('Is CfnGraphQLApi');
     return 'attrGraphQlUrl' in origin;
   }
 
   /** Type guard for HTTP API. */
   private isHttpApi(origin: Origin): origin is IHttpStage {
-    console.log('Is HttpApi');
     return 'apiId' in origin;
   }
 
   /** Type guard for Lambda Function URL. */
-  private isFunctionUrl(origin: Origin): origin is IFunctionUrl {
-    console.log('Is FunctionUrl');
+  private isFunctionUrl(origin: Origin): origin is ILambdaFunctionUrl {
     return 'url' in origin;
   }
 

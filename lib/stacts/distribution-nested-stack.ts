@@ -6,6 +6,7 @@ import * as cdk from 'aws-cdk-lib';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import { DistributionNestedStackProps } from "./DistributionNestedStackProps";
 import { OriginVerify } from "../../src/construct";
+import { ILambdaFunctionUrl } from "../../src/props";
 
 export class DistributionNestedStack extends NestedStack {
     public readonly cloudFrontDistributionUrl: string;
@@ -44,8 +45,12 @@ export class DistributionNestedStack extends NestedStack {
         });
 
         const customSecretValue = SecretValue.unsafePlainText(props.originSecretValue);
+        const origin: ILambdaFunctionUrl = {
+            url: props.originVerifyFnUrl,
+            functionArn: props.originVerifyFnArn,
+        };
         const originVerify = new OriginVerify(this, 'OriginVerify', {
-            origin: props.originVerifyFnUrl,
+            origin: origin,
             secretValue: customSecretValue,
         });
 
@@ -56,7 +61,7 @@ export class DistributionNestedStack extends NestedStack {
          */
         const cloudFrontDistribution: cloudfront.Distribution = new cloudfront.Distribution(this, `${props.resourcePrefix}-cloudFrontDistribution`, {
             defaultBehavior: {
-                origin: new origins.FunctionUrlOrigin(props.originVerifyFnUrl, {
+                origin: new origins.FunctionUrlOrigin(props.lambdaFnUrl, {
                     originShieldEnabled: true,
                     originShieldRegion: props.cdkDeployRegion,
                     customHeaders: {
