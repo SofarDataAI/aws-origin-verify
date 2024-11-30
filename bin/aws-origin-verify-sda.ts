@@ -22,6 +22,7 @@ checkEnvVariables('APP_NAME',
     'ENVIRONMENT',
     'CDK_DEPLOY_REGION',
     'OWNER',
+    'ORIGIN_SECRET_VALUE',
 );
 
 // Function to get required environment variables. Throws an error if any required environment variable is not set.

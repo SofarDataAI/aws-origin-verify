@@ -11,7 +11,7 @@ export class AwsOriginVerifySdaStack extends cdk.Stack {
 
     const originNestedStack = new OriginNestedStack(this, `${props.resourcePrefix}-originNestedStack`, {
       ...props,
-      originSecretValue: 'foobar',
+      originSecretValue: process.env.ORIGIN_SECRET_VALUE!,
     });
 
     const distributionNestedStack = new DistributionNestedStack(this, `${props.resourcePrefix}-distributionNestedStack`, {
